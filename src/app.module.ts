@@ -1,10 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import appConfig from './common/config/app.config';
+import jwtConfig from './common/config/jwt.config';
+import databaseConfig from './common/config/database.config';
+import { APP_GUARD } from '@nestjs/core';
+import { ProductModule } from './components/product/product.module';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [appConfig, jwtConfig, databaseConfig],
+    }),
+    ProductModule
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
-export class AppModule {}
+export class AppModule { }
