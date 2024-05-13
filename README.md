@@ -32,6 +32,12 @@
 $ npm install
 ```
 
+## Seed Database
+
+```bash
+$ npx prisma db seed
+```
+
 ## Running the app
 
 ```bash

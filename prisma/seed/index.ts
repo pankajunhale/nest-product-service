@@ -20,12 +20,12 @@ const handleUsers = async () => {
     //delete existing users
     await prisma.user.deleteMany();
     const saltOrRounds = 10;
-    const password = 'random_password';
+    const password = process.env.APP_USER_PASSWORD;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
     await prisma.user.create({
         data: {
             name: 'Pankaj M. Unhale',
-            email: "pankajunhale@gmail.com",
+            email: process.env.APP_USER_EMAIL,
             hashedPassword,
         },
     });

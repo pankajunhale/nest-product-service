@@ -7,6 +7,7 @@ import jwtConfig from './common/config/jwt.config';
 import databaseConfig from './common/config/database.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ProductModule } from './components/product/product.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,11 +15,16 @@ import { ProductModule } from './components/product/product.module';
       isGlobal: true,
       load: [appConfig, jwtConfig, databaseConfig],
     }),
-    ProductModule
+    AuthModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
   ],
 })
 export class AppModule { }
