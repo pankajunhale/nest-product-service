@@ -8,6 +8,7 @@ import databaseConfig from './common/config/database.config';
 import { APP_GUARD } from '@nestjs/core';
 import { ProductModule } from './components/product/product.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -21,10 +22,10 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule { }

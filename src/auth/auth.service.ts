@@ -15,6 +15,8 @@ import { BcryptService } from './bcrypt.service';
 import { SignInDto } from './dto/sing-in-dto';
 import { PrismaService } from '../prisma.service';
 import { ActiveUserData } from '../common/interfaces/active-user-data.interface';
+import { SignInResponseDto } from './dto/sign-in-response-dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +28,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) { }
 
-    async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
+    async signIn(signInDto: SignInDto): Promise<SignInResponseDto> {
         const { email, password } = signInDto;
 
         const user = await this.prismaService.user.findUnique({
@@ -45,8 +47,8 @@ export class AuthService {
         if (!isPasswordMatch) {
             throw new BadRequestException('Invalid user name or password');
         }
-
-        return await this.generateAccessToken(user);
+        const tokenResponse = await this.generateAccessToken(user);
+        return plainToInstance(SignInResponseDto, tokenResponse);
     }
 
     // async signOut(userId: string): Promise<void> {

@@ -27,7 +27,7 @@ model User {
 model Product {
   id          Int @id @default(autoincrement())
   title       String  @unique()
-  price       Decimal @default(0.00)
+  price       Int
   description String
   category    String
   image       String?

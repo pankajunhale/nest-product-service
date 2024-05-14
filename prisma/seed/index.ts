@@ -42,7 +42,7 @@ const handleProducts = async () => {
             create: {
                 title: `product-${index}`,
                 description: `product-desc-${index}`,
-                price: index,
+                price: 100.00,
                 category: `product-category-${index}`,
             },
             update: {},
@@ -55,7 +55,7 @@ main()
         await prisma.$disconnect();
     })
     .catch(async (e) => {
-        console.error(e)
+        console.error(e.message)
         await prisma.$disconnect();
         process.exit(1);
     })
