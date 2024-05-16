@@ -42,7 +42,7 @@ $ npx prisma db seed -- --environment development
 ## Migration
 
 ```bash
-$ prisma migrate dev --name init
+$ npx prisma migrate dev --name init
 ```
 
 ## Running the app

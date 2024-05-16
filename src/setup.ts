@@ -4,11 +4,11 @@ import { Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function setup(app: INestApplication) {
-    // app.useGlobalInterceptors(
-    //     new ClassSerializerInterceptor(app.get(Reflector), {
-    //         strategy: 'excludeAll',
-    //     }),
-    // );
+    app.useGlobalInterceptors(
+        new ClassSerializerInterceptor(app.get(Reflector), {
+            strategy: 'excludeAll',
+        }),
+    );
 
     const config = new DocumentBuilder()
         .setTitle('API Example')
