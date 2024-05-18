@@ -3,6 +3,7 @@ import {
     ConflictException,
     Inject,
     Injectable,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -37,7 +38,7 @@ export class AuthService {
             },
         });
         if (!user) {
-            throw new BadRequestException('Invalid user name or password');
+            throw new UnauthorizedException('Invalid user name or password');
         }
 
         const isPasswordMatch = await this.bcryptService.compare(
@@ -45,7 +46,7 @@ export class AuthService {
             user.hashedPassword,
         );
         if (!isPasswordMatch) {
-            throw new BadRequestException('Invalid user name or password');
+            throw new UnauthorizedException('Invalid user name or password');
         }
         const tokenResponse = await this.generateAccessToken(user);
         return plainToInstance(SignInResponseDto, tokenResponse);

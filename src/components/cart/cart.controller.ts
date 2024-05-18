@@ -1,24 +1,28 @@
-import { Body, Controller, Delete, Get, Param, Post, Req } from "@nestjs/common";
-import { CartDto } from "./dto/add-cart-item-dto";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Req } from "@nestjs/common";
+import { AddCartItemDto } from "./dto/add-cart-item-dto";
 import { CartService } from "./cart.service";
 import { ShoppingCartDto } from "./dto/shopping-cart-dto";
+import { DtoValidationPipe } from "../../common/pipes/dto-validation";
+import { REQ_USER_KEY } from "../../common/constants";
+import { ActiveUserData } from "src/common/interfaces/active-user-data.interface";
 
 @Controller("carts")
 export class CartController {
     constructor(private readonly cartService: CartService) { }
 
     @Get(":id")
-    getAll(@Param() params: any): Promise<Array<ShoppingCartDto>> {
-        return this.cartService.getMyShoppingCartInfo(parseInt(params.id));
+    getAll(@Req() req: any): Promise<Array<ShoppingCartDto>> {
+        const user: ActiveUserData = req[REQ_USER_KEY];
+        return this.cartService.getMyShoppingCartInfo(parseInt(user.id));
     }
 
     @Post()
-    addItemToCart(@Body() dto): Promise<CartDto> {
+    addItemToCart(@Body(new DtoValidationPipe()) dto: AddCartItemDto): Promise<any> {
         return this.cartService.addNewItem(dto);
     }
 
     @Delete(":id/:shoppingCartId")
-    removeCartItemFromCart(@Param() params: { id: string, shoppingCartId: string }): Promise<any> {
-        return this.cartService.removeCartItem(parseInt(params.shoppingCartId), parseInt(params.id));
+    removeCartItemFromCart(@Param('id', new ParseIntPipe()) id, @Param('shoppingCartId', new ParseIntPipe()) shoppingCartId): Promise<any> {
+        return this.cartService.removeCartItem(shoppingCartId, id);
     }
 }

@@ -1,6 +1,6 @@
-import { ConflictException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma.service";
-import { CartDto } from "./dto/add-cart-item-dto";
+import { AddCartItemDto } from "./dto/add-cart-item-dto";
 import { plainToInstance } from "class-transformer";
 import { ShoppingCartDto } from "./dto/shopping-cart-dto";
 
@@ -12,8 +12,8 @@ export class CartService {
         private prismaService: PrismaService
     ) { }
 
-    async addNewItem(cartDto: CartDto): Promise<CartDto> {
-        let result: CartDto;
+    async addNewItem(cartDto: AddCartItemDto): Promise<any> {
+        let result: any;
         const myCart = await this.getCart(cartDto.userId);
 
         if (!myCart) {
@@ -35,6 +35,7 @@ export class CartService {
             );
             result = Object.assign({}, shoppingCart, cartItem);
             console.log(result);
+            return plainToInstance(AddCartItemDto, result);
         }
         else {
             const isProductAlreadyExist = await this.isDuplicateProduct(cartDto, myCart.id);
@@ -44,30 +45,41 @@ export class CartService {
                         data: {
                             shoppingCartId: myCart.id,
                             productId: cartDto.productId,
-                            quantity: cartDto.userId
+                            quantity: cartDto.quantity
                         }
                     }
                 );
                 result = Object.assign({}, myCart, cartItem);
                 console.log(result);
+                return plainToInstance(AddCartItemDto, result);
             }
             else {
-                throw new ConflictException("Duplicate product", HttpStatus.CONFLICT.toString());
+                throw new ConflictException("Duplicate product");
             }
         }
-        return plainToInstance(CartDto, result);
     }
 
     public async getMyShoppingCartInfo(id: number): Promise<Array<ShoppingCartDto>> {
-        const result = await this.prismaService.cartItem.findMany({
-            where: {
-                shoppingCartId: id
-            },
-            include: {
-                product: true
+        const shoppingCart = await this.prismaService.shoppingCart.findFirst(
+            {
+                where: {
+                    userId: id
+                }
             }
-        });
-        return plainToInstance(ShoppingCartDto, result);
+        )
+        if (shoppingCart) {
+            const result = await this.prismaService.cartItem.findMany({
+                where: {
+                    shoppingCartId: shoppingCart.id
+                },
+                include: {
+                    product: true
+                }
+            });
+            console.log(result);
+            return plainToInstance(ShoppingCartDto, result);
+        }
+        return plainToInstance(ShoppingCartDto, []);
     }
 
     public async removeCartItem(shoppingCartId: number, cartItemId: number): Promise<any> {
@@ -89,7 +101,7 @@ export class CartService {
         return result;
     }
 
-    private async isDuplicateProduct(cartDto: CartDto, id: number): Promise<boolean> {
+    private async isDuplicateProduct(cartDto: AddCartItemDto, id: number): Promise<boolean> {
         const result = await this.prismaService.cartItem.findFirst({
             where: {
                 shoppingCartId: id,

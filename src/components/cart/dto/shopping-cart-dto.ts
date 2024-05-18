@@ -8,6 +8,12 @@ class Product {
 
     @Expose()
     price: number
+
+    @Expose()
+    title: string;
+
+    @Expose()
+    description: string;
 }
 
 export class ShoppingCartDto {
@@ -15,17 +21,14 @@ export class ShoppingCartDto {
     id: number;
 
     @Expose()
-    userId: number;
+    productId: number;
 
     @Expose()
-    productId: number;
+    userId: number;
 
     @IsNumber()
     @Expose()
     quantity: number;
-
-    @Expose()
-    price: number;
 
     @Expose()
     @Type(() => Product)
