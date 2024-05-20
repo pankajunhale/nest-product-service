@@ -21,6 +21,9 @@ export class ShoppingCartDto {
     id: number;
 
     @Expose()
+    shoppingCartId: number;
+
+    @Expose()
     productId: number;
 
     @Expose()
@@ -29,6 +32,9 @@ export class ShoppingCartDto {
     @IsNumber()
     @Expose()
     quantity: number;
+
+    @Expose()
+    itemTotal: number;
 
     @Expose()
     @Type(() => Product)
