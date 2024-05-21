@@ -6,19 +6,26 @@ import { DtoValidationPipe } from "../../common/pipes/dto-validation";
 import { REQ_USER_KEY } from "../../common/constants";
 import { ActiveUserData } from "src/common/interfaces/active-user-data.interface";
 
-@Controller("carts")
+@Controller("cart")
 export class CartController {
     constructor(private readonly cartService: CartService) { }
 
-    @Get(":id")
+    @Get()
     getAll(@Req() req: any): Promise<Array<ShoppingCartDto>> {
         const user: ActiveUserData = req[REQ_USER_KEY];
         return this.cartService.getMyShoppingCartInfo(parseInt(user.id));
     }
 
+    @Get("info")
+    getCartTotalAndItemCount(@Req() req: any): Promise<Array<ShoppingCartDto>> {
+        const user: ActiveUserData = req[REQ_USER_KEY];
+        return this.cartService.getCartTotalAndItemCountInfo(parseInt(user.id));
+    }
+
     @Post()
-    addItemToCart(@Body(new DtoValidationPipe()) dto: AddCartItemDto): Promise<any> {
-        return this.cartService.addNewItem(dto);
+    addItemToCart(@Body(new DtoValidationPipe()) dto: AddCartItemDto, @Req() req: any): Promise<any> {
+        const user: ActiveUserData = req[REQ_USER_KEY];
+        return this.cartService.addNewItem(dto, parseInt(user.id));
     }
 
     @Delete(":id/:shoppingCartId")

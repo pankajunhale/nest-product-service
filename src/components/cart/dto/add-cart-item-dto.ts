@@ -3,15 +3,22 @@ import { IsNumber } from "class-validator";
 
 export class AddCartItemDto {
     @Expose()
+    productId: number;
+}
+
+export class AddCartItemResponseDto {
+    @Expose()
     id: number;
 
     @Expose()
-    userId: number;
+    shoppingCartId: number;
 
     @Expose()
     productId: number;
 
-    @IsNumber()
     @Expose()
     quantity: number;
+
+    @Expose()
+    totalCartItemCount: number;
 }
