@@ -13,12 +13,12 @@ export function setup(app: INestApplication) {
     );
 
     const config = new DocumentBuilder()
-        .setTitle('API Example')
+        .setTitle('Shopping Cart API')
         .setDescription('The API description')
         .setVersion('1.0')
         .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, document);
+    SwaggerModule.setup('api', app, document);
     app.enableCors();
     return app;
 }

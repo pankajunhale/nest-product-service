@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { IProductService } from './interface';
 import { ProductDto } from './dto';
 import { plainToInstance } from 'class-transformer';

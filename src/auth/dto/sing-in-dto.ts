@@ -1,6 +1,8 @@
-import { Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class SignInDto {
-    readonly email: string;
-    readonly password: string;
+    @ApiProperty()
+    email: string;
+    @ApiProperty()
+    password: string;
 }

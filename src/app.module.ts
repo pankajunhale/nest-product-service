@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -10,6 +10,8 @@ import { ProductModule } from './components/product/product.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/guards/jwt-auth.guard';
 import { CartModule } from './components/cart/cart.module';
+import { LoggerMiddleware } from './middleware/logger/logger.middleware';
+import { HealthModule } from './components/health/health.module';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { CartModule } from './components/cart/cart.module';
       isGlobal: true,
       load: [appConfig, jwtConfig, databaseConfig],
     }),
+    HealthModule,
     AuthModule,
     ProductModule,
     CartModule
@@ -30,4 +33,9 @@ import { CartModule } from './components/cart/cart.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+
+}

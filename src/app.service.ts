@@ -6,6 +6,6 @@ export class AppService {
 
   @Public()
   getHello(): string {
-    return 'Hello World!' + new Date().toString();
+    return 'Hello World!';
   }
 }
